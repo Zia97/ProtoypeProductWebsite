@@ -24,12 +24,7 @@
 
           for (var i = 0; i < data.products.length; i++) {
             var respId = data.products[i].id;
-            $('#productlist').append('<br/>')
-
-            $('#productlist').append('<div id="products' + respId + '" ><h3> <ul><li>Name:' + data.products[i].name + "<li>Description:   " + data.products[i].description + " </li>" + '<li id="priceboxupdate' + respId + '"> Price:£' +
-              '<input id="pricefield' + respId + '"vname="example" id="forminput" type="text" value=' + data.products[i].price + '>' + '</li></ul>' +
-              '<button type="submit" name="delete" width:200px; onclick="removeProduct(' + respId + ')">Delete</button> <button type="submit" name="updatePrice" width:200px; onclick="updateProduct(' + respId +
-              ')">Update</button>  </div>')
+            addEntry(respId,data.products[i].name,data.products[i].description,data.products[i].price);
           };
 
         },
@@ -106,21 +101,25 @@
         dataType: 'json',
         success: function(response) {
 
-          console.log(response)
-
           var respId = response.id;
-          $('#productlist').append('<br/>')
-
-          $('#productlist').append('<div id="products' + respId + '" ><h3> <ul><li>Name:' + response.name + "<li>Description:   " + response.description + " </li>" + '<li id="priceboxupdate' + respId + '"> Price:£' +
-            '<input id="pricefield' + respId + '"vname="example" id="forminput" type="text" value=' + response.price + '>' + '</li></ul>' +
-            '<button type="submit" name="delete" width:200px; onclick="removeProduct(' + respId + ')">Delete</button> <button type="submit" name="updatePrice" width:200px; onclick="updateProduct(' + respId +
-            ')">Update</button>  </div>')
+          addEntry(respId,response.name,response.description,response.price);
 
         },
         error: function(reg, status, error) {
           alert(status.text);
         }
       });
+    }
+
+
+    function addEntry(id,name,description,price)
+    {
+      $('#productlist').append('<br/>')
+
+      $('#productlist').append('<div id="products' + id + '" ><h3> <ul><li>Name:' + name + "<li>Description:   " + description + " </li>" + '<li id="priceboxupdate' + id + '"> Price:£' +
+        '<input id="pricefield' + id + '"vname="example" id="forminput" type="text" value=' + price + '>' + '</li></ul>' +
+        '<button type="submit" name="delete" width:200px; onclick="removeProduct(' + id + ')">Delete</button> <button type="submit" name="updatePrice" width:200px; onclick="updateProduct(' + id +
+        ')">Update</button>  </div>')
     }
   </script>
 
