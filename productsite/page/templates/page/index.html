@@ -1,0 +1,148 @@
+﻿
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.8.2.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+</head>
+
+<body>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+      $.ajax({
+        url: 'products/',
+        type: 'get',
+        success: function(data) {
+
+          for (var i = 0; i < data.products.length; i++) {
+            var respId = data.products[i].id;
+            $('#productlist').append('<br/>')
+
+            $('#productlist').append('<div id="products' + respId + '" ><h3> <ul><li>Name:' + data.products[i].name + "<li>Description:   " + data.products[i].description + " </li>" + '<li id="priceboxupdate' + respId + '"> Price:£' +
+              '<input id="pricefield' + respId + '"vname="example" id="forminput" type="text" value=' + data.products[i].price + '>' + '</li></ul>' +
+              '<button type="submit" name="delete" width:200px; onclick="removeProduct(' + respId + ')">Delete</button> <button type="submit" name="updatePrice" width:200px; onclick="updateProduct(' + respId +
+              ')">Update</button>  </div>')
+          };
+
+        },
+        failure: function(data) {
+          alert('error');
+        }
+      })
+
+      $("#addProductButton").click(function() {
+
+        addProduct();
+      });
+
+    })
+  </script>
+
+  <script type="text/javascript">
+    function removeProduct(id) {
+      var productID = id;
+
+      $.ajax({
+        type: 'DELETE',
+        url: 'product/' + productID,
+        data: {
+          "product": productID
+        },
+        dataType: 'json',
+        success: function(response) {
+
+          $("#products" + id).remove();
+
+        },
+        error: function(reg, status, error) {
+          alert(status.text);
+        }
+      });
+    }
+
+    function updateProduct(id) {
+      var productID = id;
+      var newPrice = document.getElementById('pricefield' + id).value
+
+      $.ajax({
+        type: 'PUT',
+        url: 'product/' + productID,
+        data: {
+          "product": productID,
+          "newPrice": newPrice
+        },
+        dataType: 'json',
+        success: function(response) {
+
+        },
+        error: function(reg, status, error) {
+          alert(status.text);
+        }
+      });
+    }
+
+    function addProduct() {
+      var productPrice = document.getElementById('pricefieldform').value
+      var productName = document.getElementById('namefieldform').value
+      var productDescription = document.getElementById('descriptionfieldform').value
+
+      $.ajax({
+        type: 'POST',
+        url: 'product/',
+        data: {
+          "name": productName,
+          "price": productPrice,
+          "description": productDescription
+
+        },
+        dataType: 'json',
+        success: function(response) {
+
+          console.log(response)
+
+          var respId = response.id;
+          $('#productlist').append('<br/>')
+
+          $('#productlist').append('<div id="products' + respId + '" ><h3> <ul><li>Name:' + response.name + "<li>Description:   " + response.description + " </li>" + '<li id="priceboxupdate' + respId + '"> Price:£' +
+            '<input id="pricefield' + respId + '"vname="example" id="forminput" type="text" value=' + response.price + '>' + '</li></ul>' +
+            '<button type="submit" name="delete" width:200px; onclick="removeProduct(' + respId + ')">Delete</button> <button type="submit" name="updatePrice" width:200px; onclick="updateProduct(' + respId +
+            ')">Update</button>  </div>')
+
+        },
+        error: function(reg, status, error) {
+          alert(status.text);
+        }
+      });
+    }
+  </script>
+
+  <div id="div1">
+    <h2>Product Site</h2>
+  </div>
+
+
+  <span id="productlist" style="font-weight:bold">PRODUCT LIST</span>
+
+  <body style="background-color:powderblue;">
+
+    <h3>Add product</h3>
+    <form method="post" name="example form">
+      {% csrf_token %}
+      Name <input id="namefieldform" vname="example" id="namefieldform" type="text">
+      Description <input id="descriptionfieldform" vname="example" id="descriptionfieldform" type="text">
+      Price <input id="pricefieldform" vname="example" id="pricefieldform" type="DecimalField">
+      <input id="addProductButton" type="button" value="Add Product"></input>
+    </form>
+    <div id="result">
+    </div>
+  </body>
+
+</html>
